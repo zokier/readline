@@ -22,15 +22,15 @@ pub fn readline(prompt: &str) -> Option<String> {
 
 
 #[cfg(target_os = "windows")]
-pub fn readline(prompt: &str) -> Option<&str> {
+pub fn readline(prompt: &str) -> Option<String> {
     use std::io::stdio::stdin;
     use std::io::IoErrorKind;
-    unsafe { print!("{}", prompt); }
+    print!("{}", prompt);
     let line = stdin().read_line();
     match line {
         Ok(mut s) => {
             s.pop(); // takes the last \n off of the returned string
-            Some(s.to_c_str())
+            Some(s)
         },
         Err(e) => {
             if e.kind == IoErrorKind::EndOfFile {
