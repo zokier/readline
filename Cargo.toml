@@ -1,0 +1,6 @@
+[package]
+
+name = "readline"
+version = "0.0.1"
+authors = ["Nicholas Mazzuca <npmazzuca@gmail.com>"]
+build = "build.rs"
