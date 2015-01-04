@@ -1,6 +1,8 @@
 extern crate "readline-sys" as ffi;
 use std::io::IoResult;
 
+use std::c_str::ToCStr;
+
 #[cfg(any(target_os = "linux", target_os = "macos"))]
 pub fn readline(prompt: &str) -> IoResult<String> {
     use std::io::{IoError, IoErrorKind};
