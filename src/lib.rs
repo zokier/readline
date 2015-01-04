@@ -29,7 +29,7 @@ pub fn readline(prompt: &str) -> IoResult<String> {
 }
 
 
-#[cfg(target_os = "windows")]
+#[cfg(not(any(target_os = "linux", target_os = "macos")))]
 pub fn readline(prompt: &str) -> IoResult<String> {
     use std::io::stdio::stdin;
     print!("{}", prompt);
