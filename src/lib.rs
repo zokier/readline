@@ -1,7 +1,8 @@
 extern crate "readline-sys" as ffi;
 use std::io::IoResult;
 
-use std::c_str::ToCStr;
+use std::ffi::{CString, c_str_to_bytes};
+use std::str;
 
 pub fn readline(prompt: &str) -> IoResult<String> {
     use std::io::{IoError, IoErrorKind};
@@ -9,7 +10,7 @@ pub fn readline(prompt: &str) -> IoResult<String> {
         // It doesn't matter if there is an interior null
         // It just won't prompt all the way 
         let line_ptr = 
-            ffi::readline(prompt.to_c_str_unchecked().as_ptr());
+            ffi::readline(CString::from_slice(prompt.as_bytes()).as_ptr());
 
         if line_ptr.is_null() {
             return Err(IoError { 
@@ -19,13 +20,13 @@ pub fn readline(prompt: &str) -> IoResult<String> {
             });
         }
 
-
-        let line = String::from_raw_buf(line_ptr as *const u8);
+        let line = str::from_utf8(c_str_to_bytes(&(line_ptr as *const i8))).unwrap().to_string();
 
         Ok(line)
     }
 }
 
 pub fn add_history(line: &str) {
-    unsafe { ffi::add_history(line.as_ptr() as *const i8) };
+    let l = CString::from_slice(line.as_bytes()).as_ptr();
+    unsafe { ffi::add_history(l as *const i8) };
 }
