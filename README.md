@@ -9,5 +9,5 @@ To add to a project
 
 ```
 [dependencies]
-readline = "0.0.3"
+readline = "0.0.4"
 ```

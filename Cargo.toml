@@ -1,7 +1,7 @@
 [package]
 
 name = "readline"
-version = "0.0.3"
+version = "0.0.4"
 authors = ["Nicholas Mazzuca <npmazzuca@gmail.com>"]
 
 description = "Wrapper around readline on Linux and Mac OS X, a shim on Windows"
