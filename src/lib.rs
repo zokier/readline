@@ -1,11 +1,12 @@
+#![feature(io, std_misc)]
 extern crate "readline-sys" as ffi;
-use std::io::IoResult;
+use std::io::Result;
 
 use std::ffi::{CString, c_str_to_bytes};
 use std::str;
 
-pub fn readline(prompt: &str) -> IoResult<String> {
-    use std::io::{IoError, IoErrorKind};
+pub fn readline(prompt: &str) -> Result<String> {
+    use std::io::{Error, ErrorKind};
     unsafe {
         // It doesn't matter if there is an interior null
         // It just won't prompt all the way 
@@ -13,11 +14,7 @@ pub fn readline(prompt: &str) -> IoResult<String> {
             ffi::readline(CString::from_slice(prompt.as_bytes()).as_ptr());
 
         if line_ptr.is_null() {
-            return Err(IoError { 
-                kind: IoErrorKind::EndOfFile,
-                desc: "end of file",
-                detail: None,
-            });
+            return Err(Error::new(ErrorKind::Other, "end of file", None));
         }
 
         let line = str::from_utf8(c_str_to_bytes(&(line_ptr as *const i8))).unwrap().to_string();
