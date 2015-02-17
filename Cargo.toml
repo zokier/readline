@@ -1,14 +1,14 @@
 [package]
 
 name = "readline"
-version = "0.0.5"
-authors = ["Nicholas Mazzuca <npmazzuca@gmail.com>"]
+version = "0.0.6"
+authors = ["Nicholas Mazzuca <npmazzuca@gmail.com>", "Torste Aikio <zokier@gmail.com>"]
 
 description = "Wrapper around readline on Linux and Mac OS X, a shim on Windows"
 
-documentation = "https://github.com/GBGamer/readline-sys"
-homepage = "https://github.com/GBGamer/readline-sys"
-repository = "https://github.com/GBGamer/readline-sys"
+documentation = "https://github.com/zokier/readline"
+homepage = "https://github.com/zokier/readline"
+repository = "https://github.com/zokier/readline"
 
 readme = "README.md"
 
@@ -17,4 +17,4 @@ keywords = ["readline", "input"]
 license = "MIT"
 
 [dependencies]
-readline-sys = "0.0.1"
+readline-sys = "*"

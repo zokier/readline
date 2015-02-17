@@ -9,5 +9,12 @@ To add to a project
 
 ```
 [dependencies]
-readline = "0.0.4"
+readline = "*"
+```
+
+or
+
+```
+[dependencies.readline]
+git = "https://github.com/zokier/readline.git"
 ```
