@@ -3,7 +3,7 @@ extern crate "readline-sys" as readline_ffi;
 extern crate libc;
 extern crate alloc;
 
-use std::ffi::c_str_to_bytes;
+use std::ffi::{CString, c_str_to_bytes};
 use libc::c_char;
 
 /* copies the contents of given str to a new heap-allocated buffer
@@ -33,10 +33,8 @@ impl std::error::FromError<std::string::FromUtf8Error> for ReadlineError {
 
 pub fn readline(prompt: &str) -> Result<String, ReadlineError> {
     unsafe {
-        // It doesn't matter if there is an interior null
-        // It just won't prompt all the way 
-        let line_ptr: *const c_char= 
-            readline_ffi::readline(prompt.as_ptr() as *const c_char);
+        let line_ptr = readline_ffi::readline(
+            CString::from_slice(prompt.as_bytes()).as_ptr());
 
         if line_ptr.is_null() {
             return Err(ReadlineError::EndOfFile);
