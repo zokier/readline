@@ -1,7 +1,7 @@
 [package]
 
 name = "readline"
-version = "0.0.6"
+version = "0.0.7"
 authors = ["Nicholas Mazzuca <npmazzuca@gmail.com>", "Torste Aikio <zokier@gmail.com>"]
 
 description = "Wrapper around readline on Linux and Mac OS X, a shim on Windows"
@@ -17,4 +17,4 @@ keywords = ["readline", "input"]
 license = "MIT"
 
 [dependencies]
-readline-sys = "*"
+readline-sys = ">0.0.1"

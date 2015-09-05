@@ -1,32 +1,18 @@
-#![feature(alloc,libc,std_misc,core)]
-extern crate "readline-sys" as readline_ffi;
+#![feature(alloc,libc,cstr_memory,cstr_to_str)]
+extern crate readline_sys as readline_ffi;
 extern crate libc;
 extern crate alloc;
 
-use std::ffi::{CString, c_str_to_bytes};
+use std::ffi::{CStr,CString};
 use libc::c_char;
-
-/* copies the contents of given str to a new heap-allocated buffer
- * note: the returned buffer needs to be freed manually */
-fn str_to_cstr(line: &str) -> *const c_char {
-    let l = line.as_bytes();
-    unsafe {
-        //alignment, whats that?
-        let b = alloc::heap::allocate(line.len()+1, 8);
-        let s = std::slice::from_raw_parts_mut(b, line.len()+1);
-        std::slice::bytes::copy_memory(s, l);
-        s[line.len()] = 0;
-        return b as *const c_char;
-    }
-}
 
 pub enum ReadlineError {
     EndOfFile,
-    InvalidUtf8(std::string::FromUtf8Error)
+    InvalidUtf8(std::str::Utf8Error)
 }
 
-impl std::error::FromError<std::string::FromUtf8Error> for ReadlineError {
-    fn from_error(err: std::string::FromUtf8Error) -> ReadlineError {
+impl std::convert::From<std::str::Utf8Error> for ReadlineError {
+    fn from(err: std::str::Utf8Error) -> ReadlineError {
         ReadlineError::InvalidUtf8(err)
     }
 }
@@ -34,18 +20,19 @@ impl std::error::FromError<std::string::FromUtf8Error> for ReadlineError {
 pub fn readline(prompt: &str) -> Result<String, ReadlineError> {
     unsafe {
         let line_ptr = readline_ffi::readline(
-            CString::from_slice(prompt.as_bytes()).as_ptr());
+            prompt.as_ptr() as *const c_char);
 
         if line_ptr.is_null() {
             return Err(ReadlineError::EndOfFile);
         }
 
-        return Ok(try!(String::from_utf8(c_str_to_bytes(&line_ptr).to_vec())));
+        return Ok(try!(CStr::from_ptr(line_ptr).to_str()).to_owned());
     }
 }
 
 pub fn add_history(line: &str) {
     unsafe {
-        readline_ffi::add_history(str_to_cstr(line));
+        //TODO fix memory leak
+        readline_ffi::add_history(CString::new(line).unwrap().into_raw());
     }
 }
