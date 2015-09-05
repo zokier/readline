@@ -4,7 +4,6 @@ extern crate libc;
 extern crate alloc;
 
 use std::ffi::{CStr,CString};
-use libc::c_char;
 
 pub enum ReadlineError {
     EndOfFile,
@@ -20,7 +19,7 @@ impl std::convert::From<std::str::Utf8Error> for ReadlineError {
 pub fn readline(prompt: &str) -> Result<String, ReadlineError> {
     unsafe {
         let line_ptr = readline_ffi::readline(
-            prompt.as_ptr() as *const c_char);
+            CString::new(prompt).unwrap().as_ptr());
 
         if line_ptr.is_null() {
             return Err(ReadlineError::EndOfFile);
